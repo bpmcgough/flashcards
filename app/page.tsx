@@ -1,13 +1,30 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import flashcards from './spanish_words.json';
 
+interface Flashcard {
+  front: string;
+  back: string;
+}
+
 export default function FlashcardApp() {
+  const [shuffledCards, setShuffledCards] = useState<Flashcard[]>([]);
   const [currentCard, setCurrentCard] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [isDeckCompleted, setIsDeckCompleted] = useState(false);
+  const [showFront, setShowFront] = useState(true);
+
+  useEffect(() => {
+    shuffleCards();
+  }, []);
+
+  const shuffleCards = () => {
+    const shuffled = [...flashcards].sort(() => Math.random() - 0.5);
+    setShuffledCards(shuffled);
+    setShowFront(Math.random() < 0.5);
+  };
 
   const flipCard = () => {
     setIsFlipped(!isFlipped);
@@ -18,19 +35,30 @@ export default function FlashcardApp() {
       setCorrectAnswers(correctAnswers + 1);
     }
 
-    if (currentCard < flashcards.length - 1) {
+    if (currentCard < shuffledCards.length - 1) {
       setCurrentCard(currentCard + 1);
       setIsFlipped(false);
+      setShowFront(Math.random() < 0.5);
     } else {
       setIsDeckCompleted(true);
     }
   };
 
   const restartDeck = () => {
+    shuffleCards();
     setCurrentCard(0);
     setCorrectAnswers(0);
     setIsFlipped(false);
     setIsDeckCompleted(false);
+  };
+
+  const getCurrentCardContent = () => {
+    if (shuffledCards.length === 0) return '';
+    const card = shuffledCards[currentCard];
+    if (isFlipped) {
+      return showFront ? card.back : card.front;
+    }
+    return showFront ? card.front : card.back;
   };
 
   return (
@@ -41,7 +69,7 @@ export default function FlashcardApp() {
             <h1>Spanish Flashcards</h1>
             <p>Correct Answers: {correctAnswers}</p>
             <div className="flashcard" onClick={flipCard}>
-              {isFlipped ? flashcards[currentCard].back : flashcards[currentCard].front}
+              {getCurrentCardContent()}
             </div>
             {isFlipped && (
               <div className="buttons">
@@ -53,7 +81,7 @@ export default function FlashcardApp() {
         ) : (
           <div className="completed">
             <h2>Deck Completed!</h2>
-            <p>You got {correctAnswers} out of {flashcards.length} correct.</p>
+            <p>You got {correctAnswers} out of {shuffledCards.length} correct.</p>
             <button onClick={restartDeck}>Start Over</button>
           </div>
         )}
