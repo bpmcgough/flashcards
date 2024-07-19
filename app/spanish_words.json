@@ -104,10 +104,6 @@
         "back": "disgust"
     },
     {
-        "front": "rigida",
-        "back": "stiff"
-    },
-    {
         "front": "parvos",
         "back": "few"
     },
@@ -120,8 +116,8 @@
         "back": "lock"
     },
     {
-        "front": "cuza",
-        "back": "whole"
+        "front": "cuya",
+        "back": "whose"
     },
     {
         "front": "delante",
@@ -144,7 +140,7 @@
         "back": "wheelchair"
     },
     {
-        "front": "escapar",
+        "front": "escasear",
         "back": "become scarce"
     },
     {
